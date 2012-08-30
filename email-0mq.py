@@ -23,18 +23,15 @@ while True:
     f.write(msg)
     f.close()
 
-    # When day changes, the 'tags' value list will be empty. Ignore.
-    if not y.values()[0]:
+    # Ignore client events that aren't PUBLIC
+    if not y['tags']:
         continue
 
-    # Format is:
-    # ['tags', 'away', 'server', 'date', 'highlight', 'message', 'type', 'channel']
-    # where 'tags' is another list of items.
-    server = base64.b64decode(y.values()[2])
-    channel = base64.b64decode(y.values()[7])
-    nick = base64.b64decode(y.values()[0][3])
+    server = base64.b64decode(y['server'])
+    channel = base64.b64decode(y['channel'])
+    nick = base64.b64decode(y['tags'][3])
     nick = re.sub('^nick_','',nick)
-    message = base64.b64decode(y.values()[5])
+    message = base64.b64decode(y['message'])
 
     # If sending messages to the channel while away, it shows up as
     # "prefix_nick_white". This can change it to your nick.
