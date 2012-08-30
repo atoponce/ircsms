@@ -4,7 +4,6 @@ import base64
 import email.utils
 import re
 import smtplib
-import time
 import yaml
 import zmq
 from email.mime.text import MIMEText
@@ -24,20 +23,23 @@ while True:
     f.write(msg)
     f.close()
 
-    nick = base64.b64decode(y.items()[0][1][3])
-    server = base64.b64decode(y.items()[2][1])
-    epoch = base64.b64decode(y.items()[3][1])
-    message = base64.b64decode(y.items()[5][1])
-    channel = base64.b64decode(y.items()[7][1])
+    # When day changes, the 'tags' value list will be empty. Ignore.
+    if y.values()[0] == []:
+        pass
+
+    # Format is:
+    # ['tags', 'away', 'server', 'date', 'highlight', 'message', 'type', 'channel']
+    # where 'tags' is another list of items.
+    server = base64.b64decode(y.values()[2])
+    channel = base64.b64decode(y.values()[7])
+    nick = base64.b64decode(y.values()[0][3])
+    nick = re.sub('^nick_','',nick)
+    message = base64.b64decode(y.values()[5])
 
     # If sending messages to the channel while away, it shows up as
     # "prefix_nick_white". This can change it to your nick.
-    nick = re.sub('^nick_','',nick)
     if nick == 'prefix_nick_white':
         nick = 'eightyeight'
-
-    mt = time.localtime(int(epoch))
-    d = time.strftime('%H:%M:%S', mt)
 
     # Change your email-to-sms address as provided by your mobile provider
     fromaddr = 'weechat@irc.example.com'
