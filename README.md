@@ -21,7 +21,7 @@ to work:
 Restart WeeChat, load the script, and bind the socket to localhost on port
 2428:
 
-    /ruby load zmq\_notify.rb
+    /ruby load zmq_notify.rb
     /set plugins.var.ruby.zmq_notify.endpoint tcp://127.0.0.1:2428
 
 You should notice a TCP socket created, and listening for connections. This
