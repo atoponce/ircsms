@@ -33,6 +33,8 @@ this Python script:
 - python-yaml
 - A running SMTP server that can send outbound email
 
+## Installation
+
 I setup the script to execute in /etc/rc.local using the following code:
 
     $ cat /etc/rc.local
