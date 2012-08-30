@@ -30,6 +30,8 @@ while True:
     message = base64.b64decode(y.items()[5][1])
     channel = base64.b64decode(y.items()[7][1])
 
+    # If sending messages to the channel while away, it shows up as
+    # "prefix_nick_white". This can change it to your nick.
     nick = re.sub('^nick_','',nick)
     if nick == 'prefix_nick_white':
         nick = 'eightyeight'
@@ -37,8 +39,9 @@ while True:
     mt = time.localtime(int(epoch))
     d = time.strftime('%H:%M:%S', mt)
 
-    fromaddr = 'weechat@irc.ae7.st'
-    toaddr = '8019206031@messaging.sprintpcs.com'
+    # Change your email-to-sms address as provided by your mobile provider
+    fromaddr = 'weechat@irc.example.com'
+    toaddr = '1234567890@messaging.sprintpcs.com'
     msg = MIMEText("{0}/{1}: <{2}> {3}".format(d, server, channel, nick, message))
     msg['To'] = email.utils.formataddr(('eightyeight', toaddr))
     msg['From'] = email.utils.formataddr(('WeeChat', fromaddr))
