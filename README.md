@@ -2,13 +2,13 @@
 
 This script provides a 0mq client to subscribe to IRC events, and send them
 to a moble number using an email-to-sms gateway provided by a mobile
-provider. See https://en.wikipedia.org/wiki/List\_of\_SMS\_gateways for a list
+provider. See https://en.wikipedia.org/wiki/List_of_SMS_gateways for a list
 of providers.
 
 ## Requirements
 
 This script relies on a 0mq Ruby script for WeeChat which can be found
-here: http://weechat.org/scripts/source/stable/zmq\_notify.rb.html/. The
+here: http://weechat.org/scripts/source/stable/zmq_notify.rb.html/. The
 Ruby script creates a YAML load (not valid, but meh) and sets up a PUB 0mq
 socket to send the message to. So, some requirements must be met for that
 to work:
