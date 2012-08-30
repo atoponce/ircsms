@@ -24,8 +24,8 @@ while True:
     f.close()
 
     # When day changes, the 'tags' value list will be empty. Ignore.
-    if y.values()[0] == []:
-        pass
+    if not y.values()[0]:
+        continue
 
     # Format is:
     # ['tags', 'away', 'server', 'date', 'highlight', 'message', 'type', 'channel']
