@@ -24,7 +24,7 @@ while True:
     f.close()
 
     # Ignore client events that aren't PUBLIC
-    if not y['tags']:
+    if not y['tags'][3]:
         continue
 
     server = base64.b64decode(y['server'])
