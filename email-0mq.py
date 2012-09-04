@@ -23,12 +23,12 @@ while True:
     f.write(msg)
     f.close()
 
-    # Ignore client events that aren't PUBLIC
-    if not y['tags'][3]:
+    try:
+        nick = base64.b64decode(y['tags'][3])
+        nick = re.sub('^nick_','',nick)
+    except:
         continue
 
-    nick = base64.b64decode(y['tags'][3])
-    nick = re.sub('^nick_','',nick)
     message = base64.b64decode(y['message'])
 
     # Change your email-to-sms address as provided by your mobile provider
