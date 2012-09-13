@@ -30,11 +30,12 @@ while True:
         continue
 
     message = base64.b64decode(y['message'])
+    channel = base64.b64decode(y['channel'])
 
     # Change your email-to-sms address as provided by your mobile provider
     fromaddr = 'weechat@irc.example.com'
     toaddr = '1234567890@messaging.sprintpcs.com'
-    msg = MIMEText("{0}: {1}".format(nick, message))
+    msg = MIMEText("{0}/{1}: {2}".format(channel, nick, message))
     msg['To'] = email.utils.formataddr(('eightyeight', toaddr))
     msg['From'] = email.utils.formataddr(('WeeChat', fromaddr))
 
