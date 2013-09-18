@@ -30,6 +30,18 @@ socket = context.socket(zmq.SUB)
 socket.setsockopt(zmq.SUBSCRIBE, '')
 socket.connect('tcp://127.0.0.1:2428')
 
+def sendsms(index, channel, nick, message):
+    """Send the message to your email-to-SMS address."""
+    # Change your email-to-sms address as provided by your mobile provider
+    fromaddr = 'weechat@irc.example.com'
+    toaddr = '1234567890@messaging.sprintpcs.com'
+    msg = MIMEText("{0}: {1}/{2}: {3}".format(index, channel, nick, message))
+    msg['To'] = email.utils.formataddr(('eightyeight', toaddr))
+    msg['From'] = email.utils.formataddr(('WeeChat', fromaddr))
+    s = smtplib.SMTP('localhost')
+    s.sendmail(fromaddr, [toaddr], msg.as_string())
+    s.quit()
+
 while True:
     msg = socket.recv()
     msg = re.sub('\n:', '\n', msg)
@@ -49,7 +61,7 @@ while True:
     message = base64.b64decode(y['message'])
     channel = base64.b64decode(y['channel'])
 
-    # Regex from John Anderson <sontex@gmail.com> in:
+    # URI regex per John Anderson <sontex@gmail.com> in:
     # http://weechat.org/scripts/source/shortenurl.py.html/
     octet = r'(?:2(?:[0-4]\d|5[0-5])|1\d\d|\d{1,2})'
     ipAddr = r'%s(?:\.%s){3}' % (octet, octet)
@@ -70,13 +82,29 @@ while True:
             except:
                 continue
 
-    # Change your email-to-sms address as provided by your mobile provider
-    fromaddr = 'weechat@irc.example.com'
-    toaddr = '1234567890@messaging.sprintpcs.com'
-    msg = MIMEText("{0}/{1}: {2}".format(channel, nick, message))
-    msg['To'] = email.utils.formataddr(('eightyeight', toaddr))
-    msg['From'] = email.utils.formataddr(('WeeChat', fromaddr))
+    # chop the message of longer than 140 characters into multple messages
+    truncated = prev_word = ""
+    index = count = 0
+    limit = 140 - len("1: {0}/{1}: ".format(channel, nick))
 
-    s = smtplib.SMTP('localhost')
-    s.sendmail(fromaddr, [toaddr], msg.as_string())
-    s.quit()
+    for c in message:
+        count += 1
+        if count > limit:
+            index += 1
+            if truncated == "":
+                sendsms(index, channel, nick, prev_word)
+                prev_word = ""
+                count = 0
+            else:
+                sendsms(index, channel, nick, truncated.rstrip())
+                count = len(prev_word)
+                truncated = ""
+
+        prev_word += c
+        if c == " ":
+            truncated += prev_word
+            prev_word = ""
+
+    index += 1
+    truncated += prev_word
+    sendsms(index, channel, nick, truncated.rstrip())
