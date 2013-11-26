@@ -55,6 +55,8 @@ while True:
     try:
         nick = base64.b64decode(y['tags'][3])
         nick = re.sub('^nick_','',nick)
+        if 'prefix_nick' in nick: # don't send your own messages
+            continue
     except:
         continue
 
